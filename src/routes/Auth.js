@@ -1,5 +1,5 @@
 import { authService, firebaseInstance } from "myBase";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 const Auth = () => {
   const [email, setEmail] = useState("");
@@ -40,6 +40,7 @@ const Auth = () => {
   };
 
   const toggleAccount = () => setNewAccount((prev) => !prev);
+
   const onSocialClick = async (event) => {
     const {
       target: { name },
@@ -56,7 +57,7 @@ const Auth = () => {
   return (
     <div>
       <form onSubmit={onSumbit}>
-        <imput
+        <input
           name="email"
           type="text"
           placeholder="Email"
@@ -64,7 +65,7 @@ const Auth = () => {
           value={email}
           onChange={onChange}
         />
-        <imput
+        <input
           name="password"
           type="password"
           placeholder="Password"
@@ -72,7 +73,7 @@ const Auth = () => {
           value={password}
           onChange={onChange}
         />
-        <imput type="submit" value={newAccount ? "Create Account" : "Log In"} />
+        <input type="submit" value={newAccount ? "Create Account" : "Log In"} />
         {error}
       </form>
       <span onClick={toggleAccount}>

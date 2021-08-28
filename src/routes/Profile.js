@@ -1,15 +1,21 @@
 import { authService } from "myBase";
-import React,{useState} from "react";
-import{useHistory} from "react-router-dom";
+import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
 
+const Profile = () => {
+  // 브라우저의 history를 사용함
+  const history = useHistory();
+  // history에 pushState를 이용해 로그아웃 후 홈으로 보낸다
+  const onLogOutClick = () => {
+    authService.signOut();
+    history.pushState("/");
+  };
 
-
-export default()=>{
-    const onLogOutClick = () => {
-        authService.signOut();
-       window.history.pushState("/");
-    };
-    return <>
-    <button onClick={onLogOutClick}>Log Out</button>
+  return (
+    <>
+      <button onClick={onLogOutClick}>Log Out</button>
     </>
+  );
 };
+
+export default Profile;
