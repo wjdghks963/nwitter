@@ -38,16 +38,26 @@ const Home = ({ usetObj }) => {
   };
 
   return (
-    <form onSubmit={onSubmit}>
-      <input
-        value={nweet}
-        onChange={onChange}
-        type="text"
-        placeholder="What's on your mind?"
-        maxLength={120}
-      />
-      <input type="submit" value="Nweet" />
-    </form>
+    <div>
+      <form onSubmit={onSubmit}>
+        <input
+          value={nweet}
+          onChange={onChange}
+          type="text"
+          placeholder="What's on your mind?"
+          maxLength={120}
+        />
+        <input type="submit" value="Nweet" />
+      </form>
+      <div>
+        {/* map을 이용해서 nweet의 id를 받아 value인 text를 나오게함*/}
+        {nweets.map((nweet) => (
+          <div key={nweet.id}>
+            <h4>{nweet.text}</h4>
+          </div>
+        ))}
+      </div>
+    </div>
   );
 };
 
