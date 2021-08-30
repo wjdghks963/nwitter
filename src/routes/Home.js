@@ -1,3 +1,4 @@
+import Nweet from "components/Nweet";
 import { dbService } from "myBase";
 import React, { useEffect, useState } from "react";
 
@@ -57,11 +58,13 @@ const Home = ({ userObj }) => {
         <input type="submit" value="Nweet" />
       </form>
       <div>
-        {/* map을 이용해서 nweet의 id를 받아 value인 text를 나오게함*/}
+        {/* map을 이용해서 nweet의 id를 받아 value인 text를 나오게함, isOwner는  nweet의 주인과 로그인한 유저가 같은 사람이다 */}
         {nweets.map((nweet) => (
-          <div key={nweet.id}>
-            <h4>{nweet.text}</h4>
-          </div>
+          <Nweet
+            key={nweet.id}
+            nweetObj={nweet}
+            isOwner={nweet.id === userObj.uid}
+          />
         ))}
       </div>
     </div>

@@ -1,28 +1,33 @@
 import { dbService } from "myBase";
 import React, { useState } from "react";
 
-const Nweet = ({nweetObj, isOwner})=> {
-    const [editing, setEditing] = useState(false);
-    const [newNweet, setNewNweet] = useState(nweetObj.text);
-   const onDeleteClick = ()=>{
-       const ok = window.confirm("Are you sure you want to delete this nweet?");
-       if( ok ){
-        dbService.doc(`nweets/${nweetObj.id}`).delete();
-       }
-   };
-   const toggleEditing = () => setEditing((prev) => !prev);
-   const onSubmit = (event)=>{
+const Nweet = ({ nweetObj, isOwner }) => {
+  const [editing, setEditing] = useState(false);
+  const [newNweet, setNewNweet] = useState(nweetObj.text);
+  const onDeleteClick = () => {
+    // window.confimr은 확인 = true 취소 = false를 반환
+    const ok = window.confirm("이 nweet을 삭제하시겠습니까?");
+    if (ok) {
+      // nweets collection안에 있는 obj중 id가 맞는것을 찾아 delete함
+      dbService.doc(`nweets/${nweetObj.id}`).delete();
+    }
+  };
+  const toggleEditing = () => setEditing((prev) => !prev);
+
+  const onSubmit = async (event) => {
     event.preventDefault();
-   };
-   const onChange = (event)=> {
-       const{ target:{value},
-    }=event;
+    await dbService.doc(`nweets/${nweetObj.id}`).update({ text: newNweet });
+  };
+
+  const onChange = (event) => {
+    const {
+      target: { value },
+    } = event;
     setNewNweet(value);
-   };
-    return (
-    
-        <div>
-             {editing ? (
+  };
+  return (
+    <div>
+      {editing ? (
         <>
           <form onSubmit={onSubmit}>
             <input
@@ -47,8 +52,8 @@ const Nweet = ({nweetObj, isOwner})=> {
           )}
         </>
       )}
-        </div>
-    );
-}
+    </div>
+  );
+};
 
 export default Nweet;
