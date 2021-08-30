@@ -1,17 +1,21 @@
-import { dbService } from "myBase";
+import { dbService, storageService } from "myBase";
 import React, { useState } from "react";
 
 const Nweet = ({ nweetObj, isOwner }) => {
   const [editing, setEditing] = useState(false);
   const [newNweet, setNewNweet] = useState(nweetObj.text);
-  const onDeleteClick = () => {
+
+  const onDeleteClick = async () => {
     // window.confimr은 확인 = true 취소 = false를 반환
     const ok = window.confirm("이 nweet을 삭제하시겠습니까?");
     if (ok) {
       // nweets collection안에 있는 obj중 id가 맞는것을 찾아 delete함
-      dbService.doc(`nweets/${nweetObj.id}`).delete();
+      await dbService.doc(`nweets/${nweetObj.id}`).delete();
+      if (nweetObj.attachmentUrl !== "")
+        await storageService.refFromURL(nweetObj.attachmentUrl).delete();
     }
   };
+
   const toggleEditing = () => setEditing((prev) => !prev);
 
   const onSubmit = async (event) => {
@@ -25,6 +29,7 @@ const Nweet = ({ nweetObj, isOwner }) => {
     } = event;
     setNewNweet(value);
   };
+
   return (
     <div>
       {editing ? (
@@ -44,6 +49,9 @@ const Nweet = ({ nweetObj, isOwner }) => {
       ) : (
         <>
           <h4>{nweetObj.text}</h4>
+          {nweetObj.attachmentUrl && (
+            <img ser={nweetObj.attachmentUrl} width="50px" height="50px" />
+          )}
           {isOwner && (
             <>
               <button onClick={onDeleteClick}>Delete Nweet</button>

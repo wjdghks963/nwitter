@@ -1,5 +1,5 @@
 import { authService } from "myBase";
-import React, { useState } from "react";
+import React from "react";
 import { useHistory } from "react-router-dom";
 
 const Profile = () => {
@@ -8,7 +8,7 @@ const Profile = () => {
   // history에 pushState를 이용해 로그아웃 후 홈으로 보낸다
   const onLogOutClick = () => {
     authService.signOut();
-    history.pushState("/");
+    history.push("/");
   };
 
   return (

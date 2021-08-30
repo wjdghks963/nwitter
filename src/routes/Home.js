@@ -1,10 +1,12 @@
 import Nweet from "components/Nweet";
-import { dbService } from "myBase";
+import { dbService, storageService } from "myBase";
 import React, { useEffect, useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 
 const Home = ({ userObj }) => {
   const [nweet, setNweet] = useState("");
   const [nweets, setNweets] = useState([]);
+  const [attachment, setAttachment] = useState("");
 
   /* const getNweets = async () => {
     const dbNweets = await dbService.collection("nweets").get();
@@ -31,10 +33,27 @@ const Home = ({ userObj }) => {
 
   const onSubmit = async (event) => {
     event.preventDefault();
+
+    let attachmentUrl = "";
+
+    if (attachment !== "") {
+      const attachmentRef = storageService
+        .ref()
+        .child(`${userObj.uid}/${uuidv4()}`);
+      const response = await attachmentRef.putString(attachment, "data_url"); // putString은 url을 인자로 전달하기만 하면 해당 파일이 스토리지에 바로 저장된다.
+      attachmentUrl = await response.ref.getDownloadURL(); // 파일을 다운로드할 수 있는 스토리지의 URL반환
+    }
     await dbService
       .collection("nweets") // db에 nweets라는 collection 생성
-      .add({ text: nweet, createdAt: Date.now(), creatorId: userObj.uid }); // 해당 문서 생성 (text,createdAt)
+      .add({
+        text: nweet,
+        createdAt: Date.now(),
+        creatorId: userObj.uid,
+        attachmentUrl,
+      }); // 해당 문서 생성 (text,createdAt....)
+
     setNweet("");
+    setAttachment("");
   };
 
   const onChange = (event) => {
@@ -44,6 +63,25 @@ const Home = ({ userObj }) => {
     } = event;
     setNweet(value);
   };
+
+  const onFileChange = (event) => {
+    // file을 input에 올릴때는 event.target.files에서 찾는다.
+    const {
+      target: { files },
+    } = event;
+    const theFile = files[0];
+    const reader = new FileReader(); // 브라우저 API, new와 함께 사용한다.
+    // onloadend는 readAsDataURL함수에 전달할 인자가 결과값으로 나온 다음 상황을 감지하고 생성된 이벤트값을 사용할 수 있게 해준다.
+    reader.onloadend = (finishedEvent) => {
+      const {
+        currentTarget: { result },
+      } = finishedEvent;
+      setAttachment(result);
+    };
+    reader.readAsDataURL(theFile); // readAsDataUrl은 파일 정보를 인자로 받아 파일 위치를 URL로 반환해 준다.
+  };
+
+  const onClearAttachment = () => setAttachment("");
 
   return (
     <div>
@@ -55,15 +93,23 @@ const Home = ({ userObj }) => {
           placeholder="What's on your mind?"
           maxLength={120}
         />
+        <input type="file" accept="image/*" onChange={onFileChange} />
         <input type="submit" value="Nweet" />
+        {/* attachment가 준비 됐을때 오른쪽 html 보이고 onClear누르면 사진 초기화 */}
+        {attachment && (
+          <div>
+            <img src={attachment} width="50px" height="50px" />
+            <button onClick={onClearAttachment}>Clear</button>
+          </div>
+        )}
       </form>
       <div>
-        {/* map을 이용해서 nweet의 id를 받아 value인 text를 나오게함, isOwner는  nweet의 주인과 로그인한 유저가 같은 사람이다 */}
+        {/* map을 이용해서 nweet의 id(문서의 id)를 받아 value인 text를 나오게함, isOwner는  nweet를 생성한 유저와 로그인한 유저가 같은 사람이다 */}
         {nweets.map((nweet) => (
           <Nweet
             key={nweet.id}
             nweetObj={nweet}
-            isOwner={nweet.id === userObj.uid}
+            isOwner={nweet.creatorId === userObj.uid}
           />
         ))}
       </div>
