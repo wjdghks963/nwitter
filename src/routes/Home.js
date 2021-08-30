@@ -1,4 +1,3 @@
-import Nweet from "components/Nweet";
 import { dbService } from "myBase";
 import React, { useEffect, useState } from "react";
 
@@ -33,7 +32,7 @@ const Home = ({ userObj }) => {
     event.preventDefault();
     await dbService
       .collection("nweets") // db에 nweets라는 collection 생성
-      .add({ text: nweet, createdAt: Date.now, creatorID: userObj.id }); // 해당 문서 생성 (text,createdAt)
+      .add({ text: nweet, createdAt: Date.now(), creatorId: userObj.uid }); // 해당 문서 생성 (text,createdAt)
     setNweet("");
   };
 
