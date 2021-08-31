@@ -1,7 +1,6 @@
 import Nweet from "components/Nweet";
-import { dbService, storageService } from "myBase";
+import { dbService } from "myBase";
 import React, { useEffect, useState } from "react";
-import { v4 as uuidv4 } from "uuid";
 import NweetFactory from "components/NweetFactory";
 
 const Home = ({ userObj }) => {
@@ -9,15 +8,18 @@ const Home = ({ userObj }) => {
 
   // async await을 쓰는 함수가 useEffect에 포함되면 안되기 때문에 밖에서 정의하고 넣어준다
   useEffect(() => {
-    dbService.collection("nweets").onSnapshot((snapshot) => {
-      // snapshot.docs에 대해 모든 document에 대하여 배열로 반환함
-      const newArray = snapshot.docs.map((document) => ({
-        // id와 예전 document.data()==document의 data는 즉, createAt, creatorId, text ... 까지 다 Object형태로
-        id: document.id,
-        ...document.data(),
-      }));
-      setNweets(newArray);
-    });
+    dbService
+      .collection("nweets")
+      .orderBy("createdAt", "desc")
+      .onSnapshot((snapshot) => {
+        // snapshot.docs에 대해 모든 document에 대하여 배열로 반환함
+        const newArray = snapshot.docs.map((document) => ({
+          // id와 예전 document.data()==document의 data는 즉, createAt, creatorId, text ... 까지 다 Object형태로
+          id: document.id,
+          ...document.data(),
+        }));
+        setNweets(newArray);
+      });
   }, []);
 
   return (
