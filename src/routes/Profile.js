@@ -1,7 +1,6 @@
-import { authService, dbService } from "myBase";
-import React, { useEffect, useState } from "react";
+import { authService } from "myBase";
+import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
-import Nweet from "components/Nweet";
 
 const Profile = ({ userObj, refreshUser }) => {
   // 브라우저의 history를 사용함
