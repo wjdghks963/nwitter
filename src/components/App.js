@@ -30,7 +30,7 @@ function App() {
       updateProfile: (args) => user.updateProfile(args),
     });
   };
-
+  // userObj를 Boolean으로 로그인 했나 안했나 확인함
   return (
     <>
       {init ? (
