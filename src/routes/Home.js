@@ -21,9 +21,9 @@ const Home = ({ userObj }) => {
   }, []);
 
   return (
-    <div>
+    <div className="container">
       <NweetFactory userObj={userObj} />
-      <div>
+      <div style={{ marginTop: 30 }}>
         {/* map을 이용해서 nweet의 id(문서의 id)를 받아 value인 text를 나오게함, isOwner는  nweet를 생성한 유저와 로그인한 유저가 같은 사람이다 */}
         {nweets.map((nweet) => (
           <Nweet
