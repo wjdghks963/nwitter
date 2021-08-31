@@ -3,7 +3,6 @@ import AppRouter from "components/Router";
 import { authService } from "myBase";
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [init, setInit] = useState(false);
   const [userObj, setUserObj] = useState(null);
 
@@ -16,7 +15,7 @@ function App() {
           updateProfile: (args) => user.updateProfile(args),
         });
       } else {
-        setIsLoggedIn(false);
+        setUserObj(false);
       }
       // loading과 같은 역할 firebase가 initailize할 때까지 기다림
       setInit(true);
